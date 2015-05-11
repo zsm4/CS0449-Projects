@@ -1,0 +1,118 @@
+(13) thot $ gcc TAtest.c mymalloc.c
+(14) thot $ ./a.out
+
+TEST 1: -------------------------------------------
+
+Initial base is 0x603000
+
+Going to add ten items of size 50 to the heap...
+
+Added first item: sbrk(0) = 0x60304a
+Added second item: sbrk(0) = 0x603094
+Added third item: sbrk(0) = 0x6030de
+Added fourth item: sbrk(0) = 0x603128
+Added fifth item: sbrk(0) = 0x603172
+Added sixth item: sbrk(0) = 0x6031bc
+Added seventh item: sbrk(0) = 0x603206
+Added eighth item: sbrk(0) = 0x603250
+Added ninth item: sbrk(0) = 0x60329a
+After adding the tenth item of size 50 each, sbrk(0) = 0x6032e4
+
+Freeing the first 5 elements...sbrk(0) should remain the same
+After freeing the first five items, sbrk(0) = 0x6032e4
+
+Freeing the last item: sbrk(0) should decrease to where it was after adding the ninth item.
+After freeing the tenth item, sbrk(0) = 0x60329a. There are now 9 items left in the heap.
+
+Freeing the seventh and eighth items, sbrk(0) should remain the same as the ninth element is still in use:
+After freeing the seventh and eighth items, sbrk(0) = 0x60329a
+
+Freeing the ninth (last) item. sbrk(0) should decrease to the end of the sixth item:
+After freeing the ninth item, sbrk(0) = 0x6031bc
+
+Freeing the sixth item, which is the only used item in the list. sbrk(0) should go back to its original value:
+After freeing all items in the list, sbrk(0) = 0x603000
+
+TEST 2: ------------------------------------------------------------
+
+Initial base is 0x603000
+
+Going to add ten items of size 50 each to the heap...
+
+Added first item: sbrk(0) = 0x60304a
+Added second item: sbrk(0) = 0x603094
+Added third item: sbrk(0) = 0x6030de
+Added fourth item: sbrk(0) = 0x603128
+Added fifth item: sbrk(0) = 0x603172
+Added sixth item: sbrk(0) = 0x6031bc
+Added seventh item: sbrk(0) = 0x603206
+Added eighth item: sbrk(0) = 0x603250
+Added ninth item: sbrk(0) = 0x60329a
+After adding the tenth item of size 50 each, sbrk(0) = 0x6032e4
+
+Going to remove items in order they were placed (1-10). sbrk(0) should not change until the last one is freed, at which point it should go back to the initial base value.
+After the first item is freed, sbrk(0) = 0x6032e4
+After the second item is freed, sbrk(0) = 0x6032e4
+After the third item is freed, sbrk(0) = 0x6032e4
+After the fourth item is freed, sbrk(0) = 0x6032e4
+After the fifth item is freed, sbrk(0) = 0x6032e4
+After the sixth item is freed, sbrk(0) = 0x6032e4
+After the seventh item is freed, sbrk(0) = 0x6032e4
+After the eighth item is freed, sbrk(0) = 0x6032e4
+After the ninth item is freed, sbrk(0) = 0x6032e4
+After the tenth (last) item is freed, sbrk(0) = 0x603000
+
+TEST 3: ------------------------------------------------------------
+
+Initial base is 0x603000
+
+Going to add ten items of size 50 each to the heap...
+
+Added first item: sbrk(0) = 0x60304a
+Added second item: sbrk(0) = 0x603094
+Added third item: sbrk(0) = 0x6030de
+Added fourth item: sbrk(0) = 0x603128
+Added fifth item: sbrk(0) = 0x603172
+Added sixth item: sbrk(0) = 0x6031bc
+Added seventh item: sbrk(0) = 0x603206
+Added eighth item: sbrk(0) = 0x603250
+Added ninth item: sbrk(0) = 0x60329a
+After adding the tenth item of size 50 each, sbrk(0) = 0x6032e4
+
+Going to remove items from last to first (10-1). sbrk(0) should decrease each time.
+After the tenth (last) item is freed, sbrk(0) = 0x60329a
+After the ninth item is freed, sbrk(0) = 0x603250
+After the eighth item is freed, sbrk(0) = 0x603206
+After the seventh item is freed, sbrk(0) = 0x6031bc
+After the sixth item is freed, sbrk(0) = 0x603172
+After the fifth item is freed, sbrk(0) = 0x603128
+After the fourth item is freed, sbrk(0) = 0x6030de
+After the third item is freed, sbrk(0) = 0x603094
+After the second item is freed, sbrk(0) = 0x60304a
+After the first item is freed, sbrk(0) = 0x603000
+
+TEST 4: ------------------------------------------------------------
+
+This test will demonstrate the worst-fit implementation.
+
+Initial base is 0x603000
+
+Going to add ten items of size 50 each to the heap...
+
+Added first item: sbrk(0) = 0x60304a
+Added second item: sbrk(0) = 0x603094
+Added third item: sbrk(0) = 0x6030de
+Added fourth item: sbrk(0) = 0x603128
+Added fifth item: sbrk(0) = 0x603172
+Added sixth item: sbrk(0) = 0x6031bc
+Added seventh item: sbrk(0) = 0x603206
+Added eighth item: sbrk(0) = 0x603250
+Added ninth item: sbrk(0) = 0x60329a
+After adding the tenth item of size 50 each, sbrk(0) = 0x6032e4
+
+Freeing items 2-4,and items 6-9. sbrk(0) should not change.
+After freeing items 2-4 and items 6-9, sbrk(0) = 0x6032e4
+
+Allocating a new block of the size 50: it should be allocated where the sixth element was (ie. sbrk(0) after element 5 added plus size of node), at that is the largest open block.
+
+After freeing the rest of the items, sbrk(0) = 0x603000

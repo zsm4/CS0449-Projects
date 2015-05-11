@@ -1,0 +1,138 @@
+Zachary Martin(zsm4)
+Project 3
+
+Solution for zsm4_1
+
+Pass phrase: pipOIXCkRXGrQfkvzGAOgobXBFw
+
+To unlock zsm_1 I used gdbtui with the layout asm instruction to get a graphical picture of the assembly code and began with start. I then walked through instructions in main with the ni to skip through function calls(since I figured the compare call would be in main). I finally came to a cmpsb command so I tested the registers that where being compared, casting to an (char *) so i would get the strings. One register contained my string I entered and the other contained pipOIXCkRXGrQfkvzGAOgobXBFw, I tried this string and it unlocked the program.
+ 
+
+Solution for zsm4_2
+
+Pass phrase: Must be 12 characters or more and be symmetrical. 
+
+First I determined that the return value from <p> is 0x0 and the return value from <s> is > 0xb you pass.  Then I figured out that <s> returns the number of character so your string must have > 11 characters.  Method <c> removes the "\n" of my entered string.  Then I looked through <p> and found that it returned 1 if the passphrase was symmetrical. Thus to have a correct passphrase it must be 12 characters or more and the phrase must be symmetrical.
+
+Here I will shows the important assembly lines for method <p> and <s> with comments.
+
+method <s>: //method s returns the # of characters is the string given. 
+ 804844f:	80 3a 00             	cmpb   $0x0,(%edx) //check if the string entered is zero.
+ 8048452:	74 09                	je     804845d <s+0x19> //if the string entered is zero then leave the function.(in otherwords leave the output 0)
+ 8048454:	83 c0 01             	add    $0x1,%eax //if the string is not zero then add 1 to the return value(which is the # of chars)
+ 8048457:	80 3c 02 00          	cmpb   $0x0,(%edx,%eax,1) //check if the character at position $eax is zero.(check for no more chars)
+ 804845b:	75 f7                	jne    8048454 <s+0x10>//if the next character is not zero, then stay in the loop to count the # of letters, otherwise return. 
+
+method <c>: //method c removes the \n from the end of string entered
+
+ 8048470:	e8 cf ff ff ff       	call   8048444 <s> //get # of chars
+ 8048475:	85 c0                	test   %eax,%eax 
+ 8048477:	7e 1c                	jle    8048495 <c+0x36> //if number of chars equals 0 leave
+ 8048479:	89 1c 24             	mov    %ebx,(%esp)
+ 804847c:	e8 c3 ff ff ff       	call   8048444 <s> //get # of chars
+ 8048481:	80 7c 03 ff 0a       	cmpb   $0xa,-0x1(%ebx,%eax,1) //compare last byte to 0xa(which is the ascii value for new line)
+ 8048486:	75 0d                	jne    8048495 <c+0x36> //if last character is not \n then leave
+ 8048488:	89 1c 24             	mov    %ebx,(%esp)
+ 804848b:	e8 b4 ff ff ff       	call   8048444 <s>
+ 8048490:	c6 44 03 ff 00       	movb   $0x0,-0x1(%ebx,%eax,1) //set last character to 0(removing the \n)
+ 8048495:	83 c4 04             	add    $0x4,%esp
+ 8048498:	5b                   	pop    %ebx
+ 8048499:	5d                   	pop    %ebp
+ 804849a:	c3                   	ret    
+
+
+
+method <p>: //A little more complex method p return a 1 if the passphrase is symmetrical, otherwise it returns a 0
+
+ 804849b:	55                   	push   %ebp
+ 804849c:	89 e5                	mov    %esp,%ebp
+ 804849e:	57                   	push   %edi
+ 804849f:	56                   	push   %esi
+ 80484a0:	53                   	push   %ebx
+ 80484a1:	83 ec 04             	sub    $0x4,%esp
+ 80484a4:	8b 75 08             	mov    0x8(%ebp),%esi
+ 80484a7:	89 34 24             	mov    %esi,(%esp)
+ 80484aa:	e8 95 ff ff ff       	call   8048444 <s> //get # of chars
+ 80484af:	8d 7c 06 ff          	lea    -0x1(%esi,%eax,1),%edi //adds the character at index $eax to $edi
+ 80484b3:	bb 00 00 00 00       	mov    $0x0,%ebx //$ebx=0;
+ 80484b8:	eb 15                	jmp    80484cf <p+0x34> //jump to <a>
+break point <b>
+ 80484ba:	0f b6 04 1e          	movzbl (%esi,%ebx,1),%eax //moves the ascii value for the character at index $ebx(index of current char) into $eax and then into $al
+ 80484be:	3a 07                	cmp    (%edi),%al //$al contains the ascii value of our current char from the left; $edi contains our current string of characters from the right
+ 80484c0:	74 07                	je     80484c9 <p+0x2e> //if they are equal then we have a character match so we don't fail
+ 80484c2:	b8 00 00 00 00       	mov    $0x0,%eax //set return value to fail
+ 80484c7:	eb 21                	jmp    80484ea <p+0x4f> //character didn't match so you jump leave(and fail). 
+ 80484c9:	83 ef 01             	sub    $0x1,%edi //subtract one from right index. 
+ 80484cc:	83 c3 01             	add    $0x1,%ebx //add one to left index
+break point <a>
+ 80484cf:	89 34 24             	mov    %esi,(%esp)
+ 80484d2:	e8 6d ff ff ff       	call   8048444 <s> //get # of chars
+ 80484d7:	89 c2                	mov    %eax,%edx 
+ 80484d9:	c1 ea 1f             	shr    $0x1f,%edx //set edx to 0
+ 80484dc:	8d 04 02             	lea    (%edx,%eax,1),%eax
+ 80484df:	d1 f8                	sar    %eax //cuts $eax in half($eax contains # of chars)
+ 80484e1:	39 c3                	cmp    %eax,%ebx 
+ 80484e3:	7c d5                	jl     80484ba <p+0x1f> //if $eax(#of chars/2) < $ebx(index of current char on left half) then you succeed(return 1) and all characters matched. otherwise jump to <b> more chars left.
+ 80484e5:	b8 01 00 00 00       	mov    $0x1,%eax //fail
+ 80484ea:	83 c4 04             	add    $0x4,%esp
+ 80484ed:	5b                   	pop    %ebx
+ 80484ee:	5e                   	pop    %esi
+ 80484ef:	5f                   	pop    %edi
+ 80484f0:	5d                   	pop    %ebp
+ 80484f1:	c3                   	ret    
+
+
+ 
+
+Solution for zsm4_3
+
+Pass phrase: Must take atleast 10 characters. Of the 10 first characters excluding case exactly 6 must be successful characters. Successful characters = {t,s,r,n,l,e}.
+
+To start tackling this problem I used readelf -h to get the entry point of the program. Then I used ndisasm on the entry point to find the address of main(). After that I used objdump to get a .txt document of the assembly.  From there I did everything with pencil and paper.  The first thing I realized was that the program was only looking at 10 characters but there had to be 10 or it would continue to buffer. So I deduced that it must be reading in character by character until it has 10. From their I noticed that there was a tolowercase function being used so it probably ignoring case, most likely doing a check with ascii characters. Next I found the compare that sent you to fail, to not fail the number of successful characters must be exactly 6.  Finally to put the whole thing together I found that each character was being subtracted by 0x65 and then 0000 0000 0000 0001 would be shifted left by that amount and if that number & 0xe281(1110 0010 1000 0001) was 1 then you had a succesfull character. Below I listed everything lined up thus the successfull characters are {t,s,r,n,l,e}.
+
+
+tsrq ponm lkji hgfe
+1110 0010 1000 0001
+
+Below I will highlight the parts of zsm4_3 that checks for correct characters w/ comments. 
+
+Beggining of loop looking for special characters.
+ 8048492:	8b 45 f4             	mov    -0xc(%ebp),%eax 
+ 8048495:	83 e8 01             	sub    $0x1,%eax 
+ 8048498:	0f b6 44 05 e5       	movzbl -0x1b(%ebp,%eax,1),%eax 
+ 804849d:	0f be c0             	movsbl %al,%eax  //set next char to $eax
+ 80484a0:	89 04 24             	mov    %eax,(%esp) 
+ 80484a3:	e8 e0 fe ff ff       	call   8048388 <tolower@plt> //makes current letter lowercase. 
+ 80484a8:	83 e8 65             	sub    $0x65,%eax //sub 0x65 from letter
+ 80484ab:	83 f8 0f             	cmp    $0xf,%eax //compare eax to 0xf
+ 80484ae:	77 1b                	ja     80484cb <tolower@plt+0x143> //disregarding sign if eax is less then 0xf go to break f
+ 80484b0:	ba 01 00 00 00       	mov    $0x1,%edx 
+ 80484b5:	89 d3                	mov    %edx,%ebx  
+ 80484b7:	89 c1                	mov    %eax,%ecx 
+ 80484b9:	d3 e3                	shl    %cl,%ebx //shift 1 left by the value of current letter - 0x65
+ 80484bb:	89 d8                	mov    %ebx,%eax
+ 80484bd:	25 81 e2 00 00       	and    $0xe281,%eax //if the 1 shifted left lines up with a 1 in 1110 0010 1000 0001 
+ 80484c2:	85 c0                	test   %eax,%eax
+ 80484c4:	74 05                	je     80484cb <tolower@plt+0x143> //if the 1 shifted left lines doesn't lin up with a 1 in 1110 0010 1000 0001 then skip adding 1 to $-0x10($ebp)(which is the # of successful chars.  
+ 80484c6:	83 45 f0 01          	addl   $0x1,-0x10(%ebp) //add 1 to successful chars
+ 80484ca:	90                   	nop
+ //break<h>
+ 80484cb:	83 45 f4 01          	addl   $0x1,-0xc(%ebp) //add 1 to # of chars
+ //break <f>
+ 80484cf:	83 7d f4 0a          	cmpl   $0xa,-0xc(%ebp) 
+ 80484d3:	7e bd                	jle    8048492 <tolower@plt+0x10a> //if # of character is less then 10 jump to break 8048492 to read in more chars
+ 80484d5:	83 7d f0 06          	cmpl   $0x6,-0x10(%ebp)
+ 80484d9:	75 16                	jne    80484f1 <tolower@plt+0x169> //if your correct characters != 6 then you fail otherwise you succeed 
+ 80484db:	b8 04 86 04 08       	mov    $0x8048604,%eax
+ 80484e0:	8d 55 e5             	lea    -0x1b(%ebp),%edx
+ 80484e3:	89 54 24 04          	mov    %edx,0x4(%esp)
+ 80484e7:	89 04 24             	mov    %eax,(%esp) 
+ 80484ea:	e8 79 fe ff ff       	call   8048368 <printf@plt> //success
+ 80484ef:	eb 0c                	jmp    80484fd <tolower@plt+0x175>
+ 80484f1:	c7 04 24 32 86 04 08 	movl   $0x8048632,(%esp)
+ 80484f8:	e8 7b fe ff ff       	call   8048378 <puts@plt> //fail
+ 80484fd:	83 c4 34             	add    $0x34,%esp
+ 8048500:	5b                   	pop    %ebx
+ 8048501:	5d                   	pop    %ebp
+ 8048502:	c3                   	ret    
+
