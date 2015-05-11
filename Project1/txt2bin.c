@@ -52,8 +52,6 @@ int main( int argc, char *argv[] )
             	fscanf(txtFile,"%hi",&shortVal);
 	}
 
-
-
 	fclose( txtFile );
 	fclose( binFile );
 
