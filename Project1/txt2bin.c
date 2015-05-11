@@ -20,7 +20,6 @@ int main( int argc, char *argv[] )
 	FILE* txtFile, *binFile;
 	short int shortVal;
 
-
 	if (argc<3)
 	{
 		printf("usage: %s  <infilename> <outfilename> (i.e. ./txt2bin.exe sine-1.txt sine-1.bin)\n", argv[0] );
@@ -45,13 +44,12 @@ int main( int argc, char *argv[] )
 		read each value from the text file using fscanf as a short int and write it out to the binary file using fwrite
 	*/
 
-
-    fscanf(txtFile,"%hi",&shortVal);
+        fscanf(txtFile,"%hi",&shortVal);
 	while(feof(txtFile)==0)
 	{
-        printf("%d\n",shortVal);
-	    fwrite(&shortVal,sizeof(shortVal),1,binFile);
-        fscanf(txtFile,"%hi",&shortVal);
+            	printf("%d\n",shortVal);
+	    	fwrite(&shortVal,sizeof(shortVal),1,binFile);
+            	fscanf(txtFile,"%hi",&shortVal);
 	}
 
 
