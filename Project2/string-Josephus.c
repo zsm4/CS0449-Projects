@@ -90,7 +90,8 @@ int main(int argc, char *argv[])
 				currNode=currNode->prev;
 
 	} /* END WHILE - END OF GAME */
-    return EXIT_SUCCESS;
+	
+    	return EXIT_SUCCESS;
 }
 
 // - - - - - - - - - - - - - - -  H E L P E R   F U N C T I O N S - - - - - - - - - - - -
@@ -103,19 +104,19 @@ char * mygetline( char **buffer,  FILE * infile )
   do
   {
     	char * result = fgets( *buffer+strlen(*buffer), buffSiz-strlen(*buffer), infile);
-	    if (!result)
+    	if (!result)
     	{
-			free( *buffer ); // must destroy wasted buffer and return NULL. Don't want caller to attempt to print this buffer
-			return NULL;
-		}
+		free( *buffer ); // must destroy wasted buffer and return NULL. Don't want caller to attempt to print this buffer
+		return NULL;
+	}
+	
     	if ( strchr( *buffer, '\n' ) )
     	{
-			strtok( *buffer, "\n");  // chomp
-			return *buffer; // if '\n' in buffer we got the whole line
-		}
+		strtok( *buffer, "\n");  // chomp
+		return *buffer; // if '\n' in buffer we got the whole line
+	}
 
     	// Didn't get entire line yet.  Need to double our buffer and read again
-
     	buffSiz *= 2;
     	*buffer = realloc( *buffer, buffSiz );
 
