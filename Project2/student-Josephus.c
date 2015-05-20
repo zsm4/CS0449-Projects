@@ -106,6 +106,7 @@ int main(int argc, char *argv[])
 	}
 
 	k = atoi(argv[2]); /* assume valid int < n */
+	
 	if (strcmp(argv[3],"CW")==0)
 		direction = CLOCKWISE; /* follow the NEXT ptr */
 	else
@@ -140,6 +141,7 @@ int main(int argc, char *argv[])
 	{
 		printf("\nDELETING: "); printStudent( currNode->data, BRIEF); fflush(stdout);
 		currNode = deleteNode( &list, currNode, direction );
+		
 		if (!currNode)
 		{
 			printf("  <-- was the last man standing!\n");
@@ -148,6 +150,7 @@ int main(int argc, char *argv[])
 
 		printf("\nLIST: ");printList(list, CLOCKWISE, BRIEF );
 		printf("RESUMING AT: "); printStudent( currNode->data, BRIEF ); printf(" and skipping %d elements \n", k );
+		
 		for ( i=1 ; i<=k ; ++i )
 			if (direction==CLOCKWISE)
 				currNode = currNode->next;
@@ -168,6 +171,7 @@ char * mygetline( char **buffer,  FILE * infile )
   do
   {
     	char * result = fgets( *buffer+strlen(*buffer), buffSiz-strlen(*buffer), infile);
+    	
     	if (!result)
     	{
 		free( *buffer ); // must destroy wasted buffer and return NULL. Don't want caller to attempt to print this buffer
