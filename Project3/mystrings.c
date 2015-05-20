@@ -37,6 +37,7 @@ main(int argc, char * argv[])
     while(fread(&current,sizeof(char),1,file)==1)
     {
         int value = (int)current;
+        
         if(value>=32 && value<=126)
         {
             
@@ -61,6 +62,7 @@ main(int argc, char * argv[])
         }
         else
         {
+            
             if(length>3)
             {
                 int i;
@@ -70,12 +72,12 @@ main(int argc, char * argv[])
                 }
                 printf("\n");
             }
+            
             length = 0;
             free(buffer);
             buffer = calloc(5,sizeof(char));
             capacity = 4;
         }
-
     }
     free(buffer);
 }
