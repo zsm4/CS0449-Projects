@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/*
+    This program searching through a file's code printing all strings. May be useful for cracking the password protected files.    
+*/    
 
 main(int argc, char * argv[])
 {
@@ -12,6 +15,7 @@ main(int argc, char * argv[])
     else
     {
         FILE * file = fopen(argv[1],"rb");   //assume argv[1] is the filename
+        
         if(file == 0)
         {
             printf("Could not open file, exiting.\n");
@@ -20,11 +24,13 @@ main(int argc, char * argv[])
         else
         {
             char *buffer = calloc(5,sizeof(char));
+            
             if(!buffer)
             {
                 printf("Could not allocate enough memory for buffer, exiting.\n");
                 exit(0);
             }
+            
             char current = 0;
             int length = 0;
             int capacity = 4;
@@ -36,6 +42,7 @@ main(int argc, char * argv[])
                 int value = (int)current;
                 if(value>=32 && value<=126)
                 {
+                    
                     if(length<capacity)
                     {
                         buffer[length] = current;
@@ -44,17 +51,20 @@ main(int argc, char * argv[])
                     {
                         capacity*=2;
                         buffer = realloc(buffer,sizeof(char)*capacity+1);
+                        
                         if(!buffer)
                         {
                             printf("Could not allocate enough memory, exiting.");
                             exit(0);
                         }
                         buffer[length] = current;
-
                     }
+                    
                     length++;
                 }
-                else{
+                else
+                {
+                    
                     if(length>3)
                     {
                         int i=0;
@@ -68,13 +78,10 @@ main(int argc, char * argv[])
                     free(buffer);
                     buffer = calloc(5,sizeof(char));
                     capacity = 4;
-
-
                 }
 
             }
             free(buffer);
-
         }
     }
 }
