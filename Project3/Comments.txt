@@ -1,6 +1,9 @@
 Zachary Martin(zsm4)
 Project 3
 
+For this project I cracked 3 password protected .c files.  To do this I used gdb and also had to trace through some x86 by hand(eww).
+
+
 Solution for zsm4_1
 
 Pass phrase: pipOIXCkRXGrQfkvzGAOgobXBFw
