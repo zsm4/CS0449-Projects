@@ -26,9 +26,9 @@
 
 typedef struct CDLL_NODE
 {
-  void *data;              /* data val for node: might be int *, might be char *  */
-  struct CDLL_NODE *next;  /* pointer to next node */
-  struct CDLL_NODE *prev;  /* pointer to previous node */
+ 	void *data;              /* data val for node: might be int *, might be char *  */
+  	struct CDLL_NODE *next;  /* pointer to next node */
+  	struct CDLL_NODE *prev;  /* pointer to previous node */
 } CDLL_NODE;
 
 /*  ------------------------------------------------------------------------------------------------------
@@ -43,10 +43,10 @@ typedef struct CDLL_NODE
 
 typedef struct CDLL
 {
-  CDLL_NODE *head;     /* head: ptr to first Node in list  */
-  int (*compare)(void*, void*);  /* addr of a compare function to be used on data values in two different Nodes */
-  void (*print)( void *, int);           /* addr of a print function to be used on a data values in a Node */
-  void (*freeData)(void *);
+  	CDLL_NODE *head;     /* head: ptr to first Node in list  */
+	int (*compare)(void*, void*);  /* addr of a compare function to be used on data values in two different Nodes */
+  	void (*print)( void *, int);           /* addr of a print function to be used on a data values in a Node */
+  	void (*freeData)(void *);
 } CDLL;
 
 void fatal( char * msg );
