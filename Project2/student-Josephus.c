@@ -21,27 +21,28 @@ char ** split(char * line, int * tokensCnt, char * delim);
 void printStudent( void * data, int mode )
 {
 	STUDENT * s = (STUDENT *)data;
+	
 	if(mode == BRIEF)
-    {
-        printf("%s ",s->andrewID);
-    }
-    else{
-        printf("%s %s %d %f %s ",s->andrewID,s->name,s->yrOfGrad,s->gpa,s->major);
-    }
-
-
+  	{
+        	printf("%s ",s->andrewID);
+    	}
+    	else
+    	{
+        	printf("%s %s %d %f %s ",s->andrewID,s->name,s->yrOfGrad,s->gpa,s->major);
+    	}
 }
 
-// see the strcmp function defintion - do likewise
+
 int compareStudent( void * data1, void *data2 )
 {
-	// do your strcmp operation baed on the id string
+	// do strcmp operation baed on the id string
 	STUDENT * s1 = (STUDENT *)data1;
 	STUDENT * s2 = (STUDENT *)data2;
 	return(strcmp(s1->andrewID,s2->andrewID));
 }
 
-// you are given a ptr to the node to be freed
+
+// free pointer student 
 void freeStudent(void *student)
 {
 	// free the string fields
@@ -167,19 +168,19 @@ char * mygetline( char **buffer,  FILE * infile )
   do
   {
     	char * result = fgets( *buffer+strlen(*buffer), buffSiz-strlen(*buffer), infile);
-	    if (!result)
+    	if (!result)
     	{
-			free( *buffer ); // must destroy wasted buffer and return NULL. Don't want caller to attempt to print this buffer
-			return NULL;
-		}
+		free( *buffer ); // must destroy wasted buffer and return NULL. Don't want caller to attempt to print this buffer
+		return NULL;
+	}
+	
     	if ( strchr( *buffer, '\n' ) )
     	{
-			strtok( *buffer, "\n");  // chomp
-			return *buffer; // if '\n' in buffer we got the whole line
-		}
+		strtok( *buffer, "\n");  // chomp
+		return *buffer; // if '\n' in buffer we got the whole line
+	}
 
     	// Didn't get entire line yet.  Need to double our buffer and read again
-
     	buffSiz *= 2;
     	*buffer = realloc( *buffer, buffSiz );
 
@@ -198,14 +199,17 @@ char ** split(char * line, int * tokensCnt, char * delim)
 
 	tokens = malloc(tokensCap * sizeof(*tokens));
 	if (!tokens) fatal("Initial malloc in split failed. Program Aborting");
+	
 	if (!line)
 	{
 		printf("Line passed into split was NULL\n");
 		free(tokens); /* ony 1 ptr but we gotta free it */
 		return NULL;
 	}
+	
 	token=line; /* ptr to the first token */
 	token = strtok(line, delim);
+	
 	while (token)
 	{
 		if (*tokensCnt == tokensCap)
