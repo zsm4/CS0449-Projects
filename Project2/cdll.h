@@ -1,7 +1,5 @@
 /*
-	Interface for  Circular Doubly Linked List (templated)
-	Original Author: Guna@cs.cmu.edu
-	adapted extensively for Josephus problem by Thoffman@cs.cmu.edu
+	Interface for  Circular Doubly Linked List 
 */
 
 #ifndef CDLL_H
@@ -49,7 +47,6 @@ typedef struct CDLL
   int (*compare)(void*, void*);  /* addr of a compare function to be used on data values in two different Nodes */
   void (*print)( void *, int);           /* addr of a print function to be used on a data values in a Node */
   void (*freeData)(void *);
-
 } CDLL;
 
 void fatal( char * msg );
